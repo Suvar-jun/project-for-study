@@ -1,6 +1,7 @@
 """Итоговый вариант приложения для преподавателя и сверки."""
 
 import os
+import logging
 
 from fastapi import FastAPI
 from dotenv import load_dotenv
@@ -10,6 +11,13 @@ app = FastAPI(title="Сервис проверки рабочего времен
 load_dotenv()
 start_time = None
 
+logging.basicConfig(
+    level=os.getenv("LOG_LEVEL", "INFO"),
+    format="%(asctime)s %(levelname)s %(name)s %(message)s"
+)
+
+logger = logging.getLogger("application.py")
+
 @app.get("/")
 def root():
     return {"message": "Сервис работает"}
@@ -17,6 +25,11 @@ def root():
 
 @app.get("/health")
 def health():
+
+    logger.info(
+        "Вызвана проверка хелсчека: app name = %s, version = %s", os.getenv("APP_NAME", "DEFAULT APP NAME"),
+        os.getenv("APP_VERSION", "DEFAULT MESSAGE")
+    )
     return {"status": "ok"}
 
 
@@ -38,6 +51,12 @@ def info():
 @app.get("/check_workday")
 def check_workday():
     today = date.today()
+
+    logger.info(
+        "Запущена проверка на рабочий или выходной день: app name = %s, version = %s", os.getenv("APP_NAME", "DEFAULT APP NAME"),
+        os.getenv("APP_VERSION", "DEFAULT MESSAGE")
+    )
+
     # weekday() возвращает 0 для понедельника, 6 для воскресенья
     if today.weekday() >= 5:  # 5 — суббота, 6 — воскресенье
         return "Сегодня выходной день, время трекать не нужно!"
@@ -92,3 +111,9 @@ def calc_salary(hours: float, rate: int = 1000):
     """
     earned = int(hours) * rate
     return {"message": f"За сегодня вы заработали {earned} рублей."}
+
+@app.get("/version")
+def version():
+    app_version = os.getenv("APP_VERSION", "Внимание! Версия не указана, отредактируйте конфиги в .env")
+
+    return {"version": f"{app_version}"}
