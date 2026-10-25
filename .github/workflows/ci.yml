@@ -38,7 +38,7 @@ jobs:
 
       - name: Upload tested application
         uses: actions/checkout@7
-        with: :
+        with:
           name: fastapi-service
           path:
             application.py
