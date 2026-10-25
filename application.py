@@ -82,3 +82,13 @@ def end_time_endpoint():
         "duration_minutes": minutes,
         "message": f"Рабочий день завершён. Отработано: {hours} ч {minutes} мин"
     }
+
+
+@app.get("/calc_salary")
+def calc_salary(hours: float, rate: int = 1000):
+    """
+    hours: количество отработанных часов (float)
+    rate: ставка за час (int), по умолчанию 1000
+    """
+    earned = int(hours) * rate
+    return {"message": f"За сегодня вы заработали {earned} рублей."}
