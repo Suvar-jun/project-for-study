@@ -106,19 +106,23 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### `Address already in use` — порт 8000 занят
+### `ERROR: [Errno 98] error while attempting to bind on address ('127.0.0.1', 8000): address already in use` — порт 8000 занят
 
 Остановите старый сервер (`Ctrl+C`) или запустите новый экземпляр приложения на другом порту:
 
 ```bash
-uvicorn main:app --reload --port 8001
+python3 -m uvicorn application:app --host localhost --port 8001
 ```
 
 ### DEBUG-логи не появляются
 
-Переменная `LOG_LEVEL=DEBUG` не подхватилась. При старте в логах есть строка `Log level: <значение>` — если там `INFO`, переменная не задана в .env
+Нужно задать переменную окружения LOG_LEVEL в .env
 
 
-### `Cannot connect to host 127.0.0.1:8000`
+### `curl: (7) Failed to connect to localhost:8000 after 0 ms: Could not connect to server'
 
-Сервер не запущен. Запустите в отдельном терминале.
+Приложение не запущено. Перезапустите сервис командой и убедитесь в этом, исполнив:
+
+```bash
+ps -auxf | grep [a]pplication
+```
